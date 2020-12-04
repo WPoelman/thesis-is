@@ -1,0 +1,39 @@
+
+{
+    'database_used': database_03_12_2020.db,
+    'created_measures_at': 2020-12-04 10:30:19.717522,
+    'system_counts': {
+        'total_sentences': 242,
+        'total_with': 48,
+        'total_without': 194,
+        'total_context_with': 48,
+        'total_context_without': 14,
+        'total_knowledge_with': 0,
+        'total_knowledge_without': 180,
+    },
+    'annotation_counts': {
+        'total_annotations': 275,
+        'total_ann_with': 111,
+        'total_ann_without': 164,
+        'total_ann_with_a': 31,
+        'total_ann_without_a': 141
+        'total_ann_with_c': 31,
+        'total_ann_without_c': 7
+        'total_ann_with_k': 0
+        'total_ann_without_k': 134
+    },
+    'percentage_agree_all': {
+        'per_with_agree_a': 0.6458333333333334,
+        'per_without_agree_a': 0.7268041237113402,
+    },
+    'percentage_agree_context': {
+        'per_with_agree_c': 0.6458333333333334,
+        'per_without_agree_c': 0.5,
+    },
+    'percentage_agree_knowledge': {
+        'per_with_agree_k': nan,
+        'per_without_agree_k': 0.7444444444444445,
+    },
+    'cohens_kappa': 0.20618556701030932
+}
+    

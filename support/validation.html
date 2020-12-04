@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="nl-NL">
+
+<head>
+    <title>Wessel Poelman</title>
+    <meta name="keywords" content="HTML" />
+    <meta name="author" content="Wessel Poelman" />
+    <meta name="description" content="Wessel Poelman" />
+    <meta charset="UTF-8" />
+    <!-- <link href="style/style.css" rel="stylesheet" /> -->
+</head>
+
+<body>
+    <div class="container">
+
+        <header class="row">
+            <div class="column col-8">
+                <h1>Valideren</h1>
+            </div>
+        </header>
+
+        <div class="row">
+            <div class="column col-8">
+                <noscript>Javascript is nodig op deze pagina!</noscript>
+                <p>
+                    Teksten kunnen simpeler gemaakt worden door bijvoorbeeld onderdelen uit te leggen.
+                    Met een uitleg kan een zin of tekst begrijpelijker worden.
+                    Hieronder staan twee versies van zinnen, een versie met en een versie zonder uitleg.
+                    De uitleg staat meestal tussen haakjes.
+                    Welke van de twee versies is het meest begrijpelijk?
+                    Anders gezegd, is een uitleg nodig of niet om de zin zo begrijpelijk en simpel mogelijk te maken?
+                    Er zijn geen goede of foute antwoorden!
+                    <br />
+                    <br />
+                    Het gaat hier vooral om de keuze of een uitleg nodig is of niet,
+                    niet per se om de verwoording van de uitleg.
+                    <br />
+                    <br />
+                    Bedankt voor het helpen!
+                    <button id="get-new">Nieuwe annotatie ophalen</button>
+                </p>
+
+                <div class="row" style="margin-top: 10px; min-height: 500px;">
+                    <div class="column col-6">
+                        <h5>Zonder uitleg</h5>
+                        <p id="text-without" style="padding: 10px; border: thin white solid;"></p>
+                    </div>
+
+                    <div class="column col-6">
+                        <h5>Met uitleg</h5>
+                        <p id="text-with" style="padding: 10px; border: thin white solid;"></p>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="column col-6">
+                        <button id="button-without" style="margin: 10px;">Zonder uitleg</button>
+                    </div>
+
+                    <div class="column col-6">
+                        <button id="button-with" style="margin: 10px;">Met uitleg</button>
+                    </div>
+                </div>
+
+                <p style="margin-top: 50px;">
+                    Er worden geen persoonlijke gegevens verzameld, alleen op welke knop geklikt is.
+                    De gegevens worden gebruikt voor mijn eindscriptie Informatiekunde.
+                    Details kan ik nu nog niet geven omdat het project nog aan de gang is.
+                    Wanneer het project klaar is zal de code en de scriptie beschikbaar komen op
+                    <a href="https://github.com/WPoelman" target="_blank">https://github.com/WPoelman</a>.
+                    <br />
+                    <br />
+                    Vragen of opmerkingen? Mail naar:
+                    <a href="mailto:w.g.poelman@student.rug.nl?subject=Valideren">w.g.poelman@student.rug.nl</a>
+                </p>
+            </div>
+        </div>
+
+        <style>
+            .annotation {
+                background-color: green;
+            }
+        </style>
+        <script>
+            // const API = 'https://wpoelman.pythonanywhere.com/validation';
+            // Use this for locally testing api.py
+            const API = 'http://127.0.0.1:5000/validation';
+
+            let id = null;
+            let doingRequest = false;
+
+            const fetchNew = async () => {
+                doingRequest = true;
+
+                const response = await fetch(`${API}?last=${id}`);
+                const res = await response.json();
+
+                id = res.id;
+
+                // This is very stupid and simple xss checking, but
+                // using innerHtml from a different source always causes
+                // itching in hard to reach places.
+                if (res.with_explanation.includes('<script')) {
+                    fetchNew();
+                    return;
+                };
+
+                textWith.innerHTML = res.with_explanation;
+                textWithout.innerText = res.without_explanation;
+
+                doingRequest = false;
+            };
+
+            const store = async (choice) => {
+                doingRequest = true;
+
+                const data = new FormData();
+                data.append('id', id);
+                data.append('choice', choice);
+
+                const res = await fetch(API, {
+                    method: 'POST',
+                    body: data,
+                });
+
+                fetchNew();
+            };
+
+            const getNew = document.getElementById('get-new');
+
+            const textWith = document.getElementById('text-with');
+            const textWithout = document.getElementById('text-without');
+
+            const buttonWith = document.getElementById('button-with');
+            const buttonWithout = document.getElementById('button-without');
+
+            getNew.onclick = (e) => {
+                if (!doingRequest) {
+                    e.preventDefault();
+                    fetchNew();
+                }
+            };
+            buttonWith.onclick = (e) => {
+                if (!doingRequest) {
+                    e.preventDefault();
+                    store('with');
+                }
+            };
+            buttonWithout.onclick = (e) => {
+                if (!doingRequest) {
+                    e.preventDefault();
+                    store('without');
+                }
+            };
+
+            fetchNew();
+        </script>
+    </div>
+</body>
+
+</html>

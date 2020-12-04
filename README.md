@@ -1,6 +1,6 @@
 # Thesis Information Science
 
-This repo stores everything that was used in creating my thesis project for Information Science.
+This repo stores the source of the system that was created for my thesis project for Information Science at the University of Groningen.
 
 ## Install
 ### Python

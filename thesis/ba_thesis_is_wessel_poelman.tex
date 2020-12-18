@@ -349,7 +349,7 @@ Expert explanations in the vocabulary approach are likely more consistent than t
 Aside from the vocabularies, the systems in healthcare use an all or nothing approach.
 Both the systems that use an external screen for the explanations and the systems that insert them into the source text overlook an essential part of explaining a term, which is context.
 The external method somewhat solves this by letting the user choose what they want explained.
-If the user understands the term they simply do not click on it.
+If the user understands the term, they simply do not click on it.
 This is a convenience of the design, rather than a solution to the problem.
 If a term gets an inline explanation, but gets naturally explained in the next sentence, it arguably makes the text more confusing.
 The point of the current project is to explain a term only when it is \textit{needed}.
@@ -386,6 +386,7 @@ No external system needs to be open alongside reading the text.
 In current automatic text simplification research, named entities are somewhat neglected.
 In the previously mentioned paper by \citeauthor{alva2020} from 2020, for example, a sentence splitting model is presented that ``strips off named entities and properties'' (p.164).
 When replacing difficult words with simpeler synonyms, named entities are often discarded or replaced by a dummy word in order to reduce the size of vocabularies \citep{nisioi2017,alva2020}.
+
 Considerable research is dedicated to shortening sentences or grammatically restructuring texts.
 These approaches are important when simplifying, but a simplified sentence with difficult terms is not necessarily simple.
 Named entities are a good candidate to simplify because they can generally be explained in a couple of words.
@@ -400,9 +401,9 @@ This is, however, not guaranteed and a simple inline explanation in the first se
 \end{quote}
 
 Named entities themselves are a large research area within natural language processing.
-This field looks at recognizing named entities in a text, disambiguating those entities and linking them to a knowledge base \citep{shen2015,vanhulst2020}.
+Entity linking, for example, looks at recognizing \& disambiguating named entities in a text and linking them to a knowledge base \citep{shen2015,vanhulst2020}.
 All these areas are important for the current project.
-One of the main components of the system is an entity linker, which performs all of them.
+One of the main components of the system is an entity linker.
 Entity linkers are mostly used to assist components of information retrieval systems \citep{delpeuch2019,vanhulst2020}.
 General entity linkers have not been used in text simplification applications using explanations.
 The discussed healthcare systems do link a term to an explanation, but they do not use a \textit{general} knowledge base.
@@ -415,20 +416,20 @@ There are some recent attempts at Dutch entity linkers\footnote{This project sta
   - DAC from the Dutch National Library \url{https://github.com/KBNLresearch/dac} \newline
   - An entity linker for historical Dutch articles from the VU Amsterdam \url{https://github.com/cltl/entity-identification-from-scratch}}, but they are not as well maintained or recent as their English counterparts.
 Pre-trained systems for Dutch are even harder to come by.
-Additionally, some linkers are very domain specific, targeting only historical documents for example.
+Additionally, some are too domain specific, targeting only historical documents for example.
 For this reason, the system used in this project is DBPedia's Spotlight with their 2016 Dutch language model, created by \citeauthor{daiber2013} in 2013 (updated in 2016).
 This is not a state of the art system, but it provides a clear and usable API and comes with a pre-trained model.
 Spotlight provides entity recognition, disambiguation and linking using DBPedia as a knowledge base.
 The main knowledge base this project uses is Wikipedia.
-DBPedia provides methods to convert DBPedia entries to Wikipedia entries.
+DBPedia provides methods to convert to Wikipedia entries.
 More detailed information on Spotlight will be provided in the Method chapter.
 
 \section{Inspiration from disambiguation methods}
 The disambiguation methods in entity linkers give a good starting point of how to look at the context of a named entity.
 Disambiguation involves looking at which variant of an entity is the right one \textit{given the context}.
-For example, the sentences `the Miami Heat beat the LA Clippers last weekend' and `the Miami heat was tough for farmers this year' both contain the possible named entity \textit{Miami heat}, thus being ambiguous.
+For example, the sentences \textit{`the Miami Heat beat the LA Clippers last weekend'} and \textit{`the Miami heat was tough for farmers this year'} both contain the possible named entity `Miami heat', thus being ambiguous.
 When looking at the context, the first sentence has another basketball team in it.
-When a system has access to a knowledge base, it can use that information to guess that the first one is probably referring to the basketball team and the second to weather conditions, based on the context.
+When a system has access to a knowledge base, it can use that information to guess that the first one is probably referring to the basketball team and the second to weather conditions.
 
 This process is often done by providing a confidence score of which variant the system thinks is the closest.
 There are many disambiguation methods and techniques.
@@ -438,8 +439,8 @@ Specifically, the current system looks at how \textit{different} the context is 
 Looking at that context can be done in several ways, such as word vectors (embeddings), counting previous mentions or using the `relatedness' of Wikipedia links \citep{delpeuch2019,ma2019,vanhulst2020}.
 Disambiguation algorithms and methods often do not use long form `semantic' information from a knowledge base.
 They use data that allows for graph calculations or to enhance features of an entity \citep{rao2013}.
-Nowadays, this data is often transformed into machine learning features.
-These include categories, identifiers, edges of related entities in graph representations or popularity.
+This data is often used as machine learning features.
+These include: categories, identifiers, edges of related entities in graph representations or popularity.
 There is, however, a lot more information in knowledge bases that could be used in analyzing context.
 Take Wikipedia for example, short descriptions, summaries, even full articles provide a lot of information.
 The system in the current project uses this type of information to make the decision if an explanation is needed.
@@ -493,8 +494,8 @@ The Method chapter elaborates on the configuration and use of Spotlight.
 
 \subsection{Knowledge base}
 The knowledge base used is Wikipedia.
-For the purposes of this project, it is a very good and large resource for general information about named entities.
-It also provides an excellent open API which serves two functions:
+For the purposes of this project, it is a good and large resource for general information about named entities.
+It also has an open API which serves two functions:
 
 \begin{itemize}
   \item Retrieving an explanation for a given entity.
@@ -514,8 +515,7 @@ When needed, the system inserts the explanation between parentheses behind the e
 The final output text is the original text with explanations.
 During this process, it produces detailed intermediate, annotated data.
 It creates a version of the sentence with and without the explanation for all named entities it recognized.
-These include the context sentences the system used as well for the decision.
-Human annotators needed to annotate this output.
+These include the context sentences the system also used for the decision.
 
 \subsection{Human annotators}
 The human annotators got to see two versions of the entity in context, with and without explanation.
@@ -533,11 +533,10 @@ The full instructions can be found in the \verb+validation.html+ file in the Git
 \section{Processing}
 % Describe the way you intend to process your data as explicitly as possible.
 The final data gets processed and analyzed in several steps.
-First, interesting output of the system is analyzed, such as strange decisions or inaccuracies.
+First, the output of the system is analyzed to find interesting examples and inaccuracies.
 This is done by looking through the output texts, the scores assigned to the decisions and the intermediate output of the system.
 Second, the human annotated data is compared with the system annotated data.
-This consists of first calculating inter-annotator agreement to check how similar the human annotators performed.
-Lastly, the agreement between the system and annotators is evaluated.
+This consists of calculating the inter-annotator agreement for the human annotators and the agreement of the system and human annotations.
 
 \chapter{Method}
 % Explain and motivate here the general approach you adopt in order to
@@ -553,13 +552,12 @@ Lastly, the agreement between the system and annotators is evaluated.
 %   \includegraphics[width=4in]{ruglogo}
 %   \caption{This is an example of a figure with a proper caption.\label{figure:example}}
 % \end{figure}
-Since there are a lot of moving parts, this section is structured as follows:
-First, the approaches used for the sub questions are explained.
+This section first explains the approaches used for the sub questions.
 Next, the individual components of the system are clarified, along with a full walk through of the system.
 Finally, the validation process is outlined.
 
 \section{Context}
-This section explains the method for the first sub question:
+The first sub question:
 \begin{quote}
   How can context be captured and used to determine if a named entity needs an explanation?
 \end{quote}
@@ -592,7 +590,7 @@ For the purposes of this project, A can be considered the longer and more detail
 
 D and A are both used because, while D can give a decent amount of information about the entity, it is limited in scope.
 A gives a lot more information and casts a wider net of how the entity could be explained in the context.
-The larger amount of information in A does bring the risk of noise and useless information, more on that later.
+The larger amount of information in A does along the risk of noise, more on that later.
 Next, some pre-processing is done for L, S, R, D and A:
 
 \begin{itemize}
@@ -600,15 +598,15 @@ Next, some pre-processing is done for L, S, R, D and A:
   \item Mentions of the named entity are removed
 \end{itemize}
 
-When `context' is mentioned in the following sections, it refers to a combination of the cleaned versions of L, S \& R.
+When `context' is mentioned in this section, it refers to a combination of the cleaned versions of L, S \& R.
 From now on D and A also refer to their cleaned versions.
-This cleaning is done in order to not `taint' the similarity between L, S \& R and D \& A with noise.
+This cleaning is done in order to prevent `tainting' the similarity between L, S \& R and D \& A.
 Stop words can wrongly make it seem like two very different sentences are quite similar.
 The entity is removed because it says nothing about \textit{it being explained}, it is not part of the `context'.
 
 Next, L, S, R, D \& A are converted to word embeddings using the large Dutch language model (\verb+nl_core_news_lg+) from Spacy\footnote{\url{https://spacy.io/models/nl\#nl_core_news_lg}}.
 Spacy uses FastText \citep{bojanowski2016} for their word embeddings.
-These are trained on large web texts and Wikipedia, which is conveniently appropriate.
+These are trained on web texts and Wikipedia, which is conveniently appropriate.
 In Spacy terms, L, S, R, D \& A are \verb+Spans+ of \verb+Tokens+, which roughly means a \verb+collection+ of \verb+words+.
 These \verb+Tokens+ contain the word embedding vector for themselves and \verb+Spans+ can access these.
 
@@ -622,16 +620,16 @@ For example, if the entity is `Washington D.C.', S is 'city America' and D is 'c
 
 Calculating the similarities is done in pairs, consisting of an item from the context and D or A.
 These get summed for D and A and averaged to the number of items in the context.
-As mentioned, L and R might not exist and this deals with the difference in context length.
+As mentioned, L and R might not exist and this deals with the possible difference in context length.
 Finally, a weight is assigned to the average similarity of D and A.
 This is done because (the uncleaned version of) D is inserted into the text.
 If that similarity is high, it is likely that the entity is explained in the context.
 A contains more information and is thus more prone to noise having an effect on the similarity, even when stop words are removed.
 With some experimentation the final weights are 0.7 for D and 0.3 for A.
 The sum of these is the final score and a threshold of 0.5 has been used.
-This means, with a score of 0.4, that the context is \textit{not similar enough} to D and A.
+This means that the context is \textit{not similar enough} to D and A with a score of 0.4.
 The entity, therefore, requires an explanation.
-With a score of 0.8, the context is \textit{similar enough} to D and A.
+With a score of 0.6, the context is \textit{similar enough} to D and A.
 The entity is likely already explained in the context and does not need an explanation.
 The pseudocode in Algorithm \ref{figure:context} shows the process of calculating the score with all three items present in the context.
 
@@ -672,19 +670,18 @@ The approach to tackle the second sub question is explained here.
 
 Since the dataset contains almost a million recent news articles, spanning almost four years, from four different sources, it is a suitable place to look for common knowledge.
 To 100\% decide if a named entity is considered `common knowledge', is almost impossible since it dependens on a lot of different factors.
-Current trends or the background of a person for example.
 
 The method used in this project is the straightforward approach of counting all occurrences of named entities.
 This is done using the Spacy NER (named entity recognition) model, also from \verb+nl_core_news_lg+.
 This model does not have state of the art performance, but is good enough for the purposes of this project.
 The process of counting was done by running the entire corpus of roughly one million articles through this NER model and keeping a count of all entities it encountered.
 The entities were normalized to all lowercase to make the count more accurate.
-This lengthy process resulted in a dictionary of 1.826.103 unique entities.
+This resulted in a dictionary of 1.826.103 unique entities.
 The model was not restricted in categories it was allowed to find.
 This included entities such as dates and percentages.
 This was done on purpose since the approach of the other components was not finalized at this point.
 Categories other than named entities might have been useful as well.
-The resulting dataset has been added to the GitHub repository of this project\footnote{The files to look for are \textit{all\_entity\_counts.csv} \& \textit{all\_entity\_counts.pickle}}.
+The resulting dataset has been added to the GitHub repository of this project\footnote{The files: \textit{all\_entity\_counts.csv} \& \textit{all\_entity\_counts.pickle}}.
 It took a long time to create and might be useful for other projects.
 As an illustration, Table \ref{table:entity_counts} shows the ten most common entities and their counts.
 
@@ -707,7 +704,7 @@ As an illustration, Table \ref{table:entity_counts} shows the ten most common en
 \end{table}
 
 Next, a cutoff point had to be chosen for when an entity was considered `common knowledge'.
-After experimenting with numerous configurations, the cutoff was set at the top 1\% most common entities.
+After experimenting, the cutoff was set at the top 1\% most common entities.
 This created a list of 18.261 entities, with the least frequent entity occurring 118 times.
 If the system encounters an entity from that top 1\%, it knows it does \textit{not} need to explain it.
 Entities are first lowered before checking if they are present in the list\footnote{A Python set is used in practice for efficiency, but a `list' is easier to imagine here.}.
@@ -719,11 +716,10 @@ This captures quite a lot of common knowledge.
 The only `type' of named entity that is not captured well with this method, is historic figures / events.
 These generally do not occur in news articles, unless a museum or something similar is mentioned.
 In this project the same dataset is also used for annoting, common knowledge from the \verb+DutchWebCorpus+ is therefore captured well enough.
-This method is specific to a corpus and use case.
+This method is specific to a corpus and use case and might not be generalizable to other texts.
 
 \section{System components}
 This section will provide a walk through the system, starting with an article from the corpus as input.
-The descriptions will be brief and explain \textit{why} and \textit{how} the system works, not what it does in detail.
 
 The article text first gets sent to the entity linker Spotlight, which is configured to look for names, organizations, persons and places\footnote{Specifically the following DBPedia types: DBpedia:Name, DBpedia:Organisation, DBpedia:Person and DBpedia:Place}.
 Spotlight uses a confidence value between 0 and 1 for how sure it is about a found entity.
@@ -737,15 +733,15 @@ With this title the system retrieves the description (D from previous section) a
 The response from Wikipedia gets cached in an effort not to `abuse' the API.
 The entity `Amsterdam' alone would create more than 150.000 requests without caching if all articles were annotated.
 
-If the previous steps were completed successfully, the system calculates the score for the entities to see if the explanation is needed.
+If the previous steps were successful, the decision is made if an explanation is needed.
 First, the system checks if the entity is in the `common knowledge' list from section 4.2.
 If that is the case it returns a score of 1.
 If not, the system calculates the score using the context method explained in section 4.1.
-Next, the score is compared to the threshold of 0.5 (can be changed).
+Next, the score is compared to the threshold of 0.5.
 If the score is \textit{higher} than the threshold, the explanation is \textit{not} needed.
 This is also why `common knowledge' entities get a score of 1.
 
-Next, the explanation, if needed, gets inserted behind the entity in parentheses into a copy of the original text.
+Next, the explanation gets inserted behind the entity in parentheses into a copy of the original text, if needed.
 Finally, the annotated output text is produced.
 During the entire process, metadata is saved which is used for the validation task and to analyse what the system is doing.
 This metadata, per entity, consists of:
@@ -760,7 +756,7 @@ This metadata, per entity, consists of:
 \end{itemize}
 
 The final output is a file with the input text, output text and lists of annotated \& ignored entities.
-The entity lists consist of the above mentioned metadata per entity.
+The lists consist of the above mentioned metadata per entity.
 
 \section{Validation process}
 In the corpus there are 20 `raw' text files with a large number of articles in them.
@@ -785,12 +781,12 @@ The distribution of that selection is shown in Table \ref{table:sample}.
 There are no samples of `common knowledge' \& `with' since common knowledge only filters out entities that \textit{do not} need explanations.
 In other words, a common knowledge entity never receives an explanation.
 
-These samples were inserted in an database (\verb+select_data_for_validation.py+), along with some columns for keeping count of validations.
-A simple API (\verb+api.py+) was created to get a random entity from the database which has less than two validations.
+These samples were inserted in an database, along with some columns for keeping count of validations.
+A simple API was created to get a random entity from the database which has less than two validations.
 It also stored the choice of `with' or `without'.
 As shown in Figure \ref{figure:validation}, people got shown the entire context window with and without explanation.
 
-A page for the validations was made (\verb+validation.html+) and both the page and API were put live.
+A page for the validations was made and both the page and API were put live.
 The link to the page was shared with friends, family and colleagues.
 
 \chapter{Results and Discussion}
@@ -808,7 +804,7 @@ The link to the page was shared with friends, family and colleagues.
 %     \hline
 %   \end{tabular}
 % \end{table}
-This chapter presents some interesting findings in the system's output data.
+This chapter presents some interesting findings from the system's output data.
 This will provide some insight in good elements of the system and areas of improvement.
 The second part presents the human annotation results and how they compare to the decisions of the system.
 When looking at the results, two baselines can be considered for the task:
@@ -823,18 +819,18 @@ The first becomes an unreadable mess, the opposite of the goal of making texts m
 The second baseline ignores the possibility of entities being difficult or, from another point of view, considers all named entities `common knowledge'.
 Of course there can be entities that are difficult or hard to understand in a text.
 To consider all named entities common knowledge is too large of a generatization and requires nuance.
-For both baselines, there is an approach in the middle and the results of the system hopefully show that.
+For both baselines, there is an approach in the middle and the results of the system show that.
 
 \section{General observations}
 The majority of the system's output seems correct in terms of accuracy of the entity linker and the quality of the explanations.
 There were some strange outliers and mistakes.
 
 Sometimes the description or abstract field was filled with the data of a Wikipedia disambiguation page.
-This is due to wrong DBPedia URI to Wikipedia title conversions.
+This is due to wrong DBPedia to Wikipedia conversions.
 This was a rare occurrence and came to light when one of the human annotators emailed about it.
 These errors are quite detrimental to the system since it propagates to all components.
 The description and abstract give nonsense information in that case, which causes a wrong assesment of the context.
-Finally, the explanation itself is also wrong which makes the text more confusing.
+The explanation itself is also wrong, which makes the text more confusing.
 The system did have measures in place to filter out bad Wikipedia results.
 Checks such as skipping entities if the description or abstract were empty, but this type of error also needs filtering.
 
@@ -852,8 +848,9 @@ Both help to make the system perform better.
 Apart from the errors, the system did a lot right.
 When reading through the output sentences, `common knowledge' seems to be captured surprisingly well for such a simple approach.
 Most of the ignored `common knowledge' entities truly seem obvious.
-The context part of the system also worked quite well, but is more difficult to judge since it is so text dependent.
-A couple of interesting examples:
+The context part of the system also worked quite well, but is more difficult to judge at a glance since it is so text dependent.
+
+An example of the system deciding an explanation is not needed, based on context:
 
 \newpage
 
@@ -872,7 +869,7 @@ The score is higher than the threshold of 0.5 and there are indeed several indic
 Both the description and abstract mention `Noord-Holland', which also occur in the context.
 The abstract mentions `provincie', which is also present in the context.
 This example also indicates an area of improvement. 
-The score is relatively low for how similar the description and abstract seem.
+The score is relatively low for how similar the description and abstract seem to the context.
 The description mentions `plaats' and nothing similar is present in the context.
 This could be the reason for a relatively low description score, which is amplified by the high weight (0.7) it gets.
 It might have been better to restrict the context window for the description to more accurately account for this.
@@ -895,11 +892,11 @@ An example of the system deciding an explanation is needed, based on context:
 This named entity is not considered common knowledge. 
 It is also not explained in the context that Valldemossa is a municipality (gemeente).
 The explanation does provide extra, possibly useful, information.
-As a reader you know it is a geographical location, but what exactly is not clear.
+From the context you know the entity is a geographical location, but not exactly what it is.
 This example does show a weakness of the knowledge base, the writer uses the more common spelling `Mallorca', while the knowledge base uses `Majorca'.
 In this case this is not such an issue and with well trained word embeddings, these two should be very similar (Spacy reports a similarity of 0.75).
 Interestingly, the system found the named entities Mallorca and Michael Douglas as well in this same text and considered them common knowledge.
-`Variety' was not found, this could be due to it not being recognized by Spotlight or missing Wikipedia information.
+`Variety' was not found, this could be due to it not being recognized by Spotlight or not having the required Wikipedia information.
 
 \section{Validation}
 From the 359 output samples, 255 sentences were annotated, 48 of those were annotated by two annotators for a total of 303 annotations.
@@ -909,7 +906,7 @@ It was not needed and the task was made to be as simple and straightforward as p
 This was done in an effort to get more annotations.
 All annotators are native Dutch speakers and the estimated age range is between 17 and 56 years old.
 
-The inter-annotator agreement for the two time annotated sentences is 0.402, which is mediocre.
+The inter-annotator agreement was 0.402, which is mediocre.
 This could be due to the relatively low number of double annotations or because there were some errors in the data.
 One notable error that slipped through the cracks is the previously mentioned disambiguation page information.
 Another reason might be some surprising or `suspicious' annotations that indicate some annotators not taking the task seriously, not understanding the task or something else.
@@ -953,7 +950,7 @@ This is due to more of those types in the original output.
 In hindsight, this split could have been more balanced.
 
 The total distribution of what category the annotators chose is 125 `with explanation' and 178 `without explanation'.
-This is a surprisingly high number of occurrences where the explanation was needed, almost two times as many as the system.
+This is a surprisingly high number of occurrences where the explanation was needed.
 This might tie into the suspicious annotations as those were also in the `with' category.
 
 Table \ref{table:agreement} shows how many of the annotations labeled a sentence the same as the system.
@@ -974,9 +971,9 @@ These results show the system and the human annotators are in decent agreement o
 Of all annotated sentences, the system and annotators agreed in 76\% of cases.
 This shows that, even with the possible suspicious or bad annotations in the `with' category, the system performs decently.
 The agreement between the system and annotators is worst when the system decides that an explanation is not needed based on context.
-This could be due to the relatively low number of annotated sentences were this was the case (17).
+This could be due to the relatively low number of annotated sentences in that category (17).
 It could also be due to the system giving the sentence too high of a score when this is not justified.
-Here are two examples of those 17 `context \& without' cases where the system and annotators disagreed:
+Here are two examples of the `context \& without' category where the system and annotators disagreed:
 
 \begin{verbatim}
   Context: "Gezinsuitbreiding voor Jessica Simpson en haar man
@@ -1006,8 +1003,7 @@ It also includes an interesting quirk of the knowledge base:
   Score: 0.5997754807602497,
 \end{verbatim}
 
-`Airline company' (vliegtuigmaatschappij) is mentioned in the context, which also occurs in a slightly different form in the abstract and explanation as `luchtvaartmaatschappij'.
-These two have a word embedding similarity of 0.95 according to Spacy, which definitely gets picked up.
+`Airline company' (vliegtuigmaatschappij) is mentioned in the context, which also occurs in a slightly different form in the abstract and explanation as `luchtvaartmaatschappij' (similarity of 0.95).
 An interesting quirk of the knowledge base is that the explanation states that the entity is Belgian, but the extract states British.
 Both are not false, but not the whole truth either.
 VLM was originally founded in Belgium, but was later purchased by a British airline company.
@@ -1024,7 +1020,7 @@ This is quite high and shows that the system pretty accurately captures `common 
 This is, again, highly dependent on the corpus and might not translate well to texts outside of it.
 
 Finally, the `context \& with' category shows the system and annotators agreeing 76\% of the time.
-This is a decent result and this category also the highest number of disagreeing annotators.
+This is a decent result and this category also has the highest number of disagreeing annotators.
 This shows that it is not as black and white to decide if an explanation is needed or not.
 An interesting example of human and system disagreement in the `context \& with' category:
 
@@ -1038,8 +1034,9 @@ An interesting example of human and system disagreement in the `context \& with'
   Score: 0.24097628545364733,
 \end{verbatim}
 
-The system gives this a surprisingly low score considering `muziekduo' and `band' or `muziekgroep' are very similar.
-This could be due to the strange cutoff point of the last context sentence, in the full text this sentence is the following:
+The system gives a surprisingly low score considering `muziekduo', `band' and `muziekgroep' are very similar.
+This could be due to the strange cutoff point of the last sentence in the context. 
+In the full text, it is the following:
 
 \begin{quote}
   Hun comebacksingle My Salvation gaat donderdag op BBC Radio 2 in premiere, zo hebben zanger Tunde Baiyewu en toetsenist en producer Paul Tucker bekendgemaakt.
@@ -1070,9 +1067,9 @@ This project started with the following research question and sub questions:
 \end{quote}
 
 The results showed that information from a knowledge base can be used to capture how well the context of a named entity explains it.
-A short description and the first sentence of the abstract from the knowledge base were used to check their similarity to the entity's context.
-This context window was set at three sentences and were stripped from the entity itself and stop words in an effort to only capture relevant information.
-Weights of 0.7 and 0.3 were assigned to the description and abstract.
+A short description and the first sentence of the abstract from the knowledge base were used to compare their similarity to the entity's context.
+This context window was set at three sentences and were stripped from the entity itself and stop words, in an effort to only capture relevant information.
+Weights of 0.7 and 0.3 were assigned to the description and abstract, respectively.
 This accounted for the description being used as the explanation in the text and the abstract possibly containing more noisy information.
 The results show that when the system made a decision based on context, human annotators agreed with that decision in 72\% of cases.
 
@@ -1094,10 +1091,10 @@ Examples of external errors that the system could try to catch:
 
 \begin{multicols}{2}
   \begin{itemize}
-    \item Disambiguation pages instead of an entity
+    \item A disambiguation page instead of an entity page
     \item Wrongly recognized entities
     \item Strange information in knowledge base 
-    \item Sentence splitting
+    \item Odd sentence splitting
   \end{itemize}
 \end{multicols}
 
@@ -1107,7 +1104,7 @@ The approach in this project is not language dependent, to apply the system to a
 
 \begin{multicols}{2}
   \begin{itemize}
-    \item An entity linker
+    \item An entity linker for that language
     \item Access to a version of Wikipedia (or another knowledge base with similar fields)
     \item A corpus from which to extract common knowledge entities and to create samples for validation from
     \item A Spacy model (or another NLP method) with sentence splitting and word embeddings
@@ -1126,19 +1123,19 @@ From all these, the built in Spacy one was the smallest, but preformed very simi
 Considering the computational cost of the other models, the choice fell on Spacy.
 For further research, other embedding approaches might be better for the task.
 The \verb+wikipedia2vec+ model used by \cite{vanhulst2020} could be an interesting alternative since it possibly captures more information from the knowledge base that might improve performance.
-The current Spacy embeddings are also trained on Wikipedia, but not on metadata.
+The current embeddings are also trained on Wikipedia, but not on metadata.
 
 Finally, the source code of the system contains more explanations and details and can be found at: \url{https://github.com/WPoelman/thesis_is}.
 It is a shame that the validations are not of ideal quality.
 It seems that the system performed quite well and that the project combined some approaches that have not been done before in the automatic text simplification field.
-The current approach is language independent and more configurations and methods are possible for the task.
-In closing, this might be an interesting area to explore further.
+The current approach is language independent and more configurations and methods are possible for the task at hand.
+There is a lot of room for more experimentation, which might be interesting to explore further.
 
 %----------------------------------------------------------------------------------------
 %	BIBLIOGRAPHY
 %----------------------------------------------------------------------------------------
 
 \bibliographystyle{chicago}
-\bibliography{thesis.bib}
+\bibliography{../thesis.bib}
 
 \end{document}

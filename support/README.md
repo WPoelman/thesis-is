@@ -14,6 +14,8 @@
 - `api.py`: simple Flask api for storing and retrieving the annotations for validating, uses sqlite db from previous point
 - `validation.html`: skeleton html that can be used to access the api
 
+A compressed version of `OUTPUT_RAW` is included in the `data` folder.
+
 The server for the api is hosted at: [https://wpoelman.pythonanywhere.com/validation](https://wpoelman.pythonanywhere.com/validation)
 
 The page for validation is hosted at: [https://wesselpoelman.nl/validation.html](https://wesselpoelman.nl/validation.html)

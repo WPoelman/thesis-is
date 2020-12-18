@@ -9,7 +9,6 @@ Description:    This script generates an txt file with measures
 Usage:          python analysis.py <path_to_database>
 '''
 
-import random
 import sqlite3
 import sys
 from datetime import datetime
@@ -105,10 +104,12 @@ def main():
 
     a, b = split_items(all_double_with)
 
+    date = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+
     output = f'''
 {{
     'database_used': {database_path},
-    'created_measures_at': {datetime.now()},
+    'created_measures_at': {date},
     'system_counts': {{
         'total_sentences': {total_sentences},
         'total_with': {total_with},
@@ -145,7 +146,7 @@ def main():
 }}
     '''
 
-    with open(f'measures{random.randint(0, 100000)}.txt', 'w') as f:
+    with open(f'measures_{date}.txt', 'w') as f:
         f.write(output)
 
     print(output)

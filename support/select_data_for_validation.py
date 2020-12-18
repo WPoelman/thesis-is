@@ -24,6 +24,11 @@ def main():
     # We are going to select:
     #   500 decided not to explain
     #   500 decided to explain
+    #
+    # NOTE: this was the initial target, but proved to be way too high.
+    # The final database contains a lot less, both to increase the chance
+    # of two annotations for the same sample and because a lot more people
+    # were needed to annotate this many!
     target = 500
     with_explanation = 0
     without_explanation = 0
@@ -54,16 +59,16 @@ def main():
                         system_choice=ann['choice'],
                     )
 
-            if (len(data['annotated_entities']) > 0
-                    and with_explanation < target):
-                with_explanation += 1
-                db.session.add(model)
-                continue
+                    if (len(data['annotated_entities']) > 0
+                            and with_explanation < target):
+                        with_explanation += 1
+                        db.session.add(model)
+                        continue
 
-            if (len(data['ignored_entities']) > 0
-                    and without_explanation < target):
-                without_explanation += 1
-                db.session.add(model)
+                    if (len(data['ignored_entities']) > 0
+                            and without_explanation < target):
+                        without_explanation += 1
+                        db.session.add(model)
 
     db.session.commit()
 

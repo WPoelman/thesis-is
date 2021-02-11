@@ -16,9 +16,9 @@
 
 A compressed version of `OUTPUT_RAW` is included in the `data` folder.
 
-The server for the api is hosted at: [https://wpoelman.pythonanywhere.com/validation](https://wpoelman.pythonanywhere.com/validation)
+The server for the api ~~is~~ was hosted at: ~~[https://wpoelman.pythonanywhere.com/validation](https://wpoelman.pythonanywhere.com/validation)~~ (not online anymore)
 
-The page for validation is hosted at: [https://wesselpoelman.nl/validation.html](https://wesselpoelman.nl/validation.html)
+The page for validation ~~is~~ was hosted at: ~~[https://wesselpoelman.nl/validation.html](https://wesselpoelman.nl/validation.html)~~ (not online anymore)
 
 ## Usage
 In general the usage is as follows:

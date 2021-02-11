@@ -26,7 +26,7 @@ docker run -itd --restart unless-stopped -p 2232:80 dbpedia/spotlight-dutch spot
 5. Run `main.py` with the path to the corpus.
 
 ## Validation
-The server for the api is hosted at: [https://wpoelman.pythonanywhere.com/validation](https://wpoelman.pythonanywhere.com/validation)
+The server for the api ~~is~~ was hosted at: [https://wpoelman.pythonanywhere.com/validation](https://wpoelman.pythonanywhere.com/validation) (not online anymore)
 
-The page for validation is hosted at: [https://wesselpoelman.nl/validation.html](https://wesselpoelman.nl/validation.html)
+The page for validation ~~is~~ was hosted at: [https://wesselpoelman.nl/validation.html](https://wesselpoelman.nl/validation.html) (not online anymore)
 
